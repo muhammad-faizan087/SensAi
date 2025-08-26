@@ -1,0 +1,17 @@
+1. clerkMiddleware and auth
+Where auth comes from?
+
+The auth parameter is provided automatically by clerkMiddleware.
+
+When you call clerkMiddleware(callback), Clerk injects an auth function as the first argument to your callback.
+
+If the user is signed in, auth() returns data like:
+
+{
+  "userId": "user_123",
+  "sessionId": "sess_456",
+  "getToken": [Function]
+}
+
+
+If the user is not signed in, userId will be null.
