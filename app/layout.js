@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider.jsx";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,7 +35,8 @@ export default function RootLayout({ children }) {
             disableTransitionOnChange
           >
             <Navbar />
-            <main className="min-h-[80vh] ">{children}</main>
+            <main className="min-h-[80vh]">{children}</main>
+            <Toaster richcolors />
             <Footer />
           </ThemeProvider>
         </body>

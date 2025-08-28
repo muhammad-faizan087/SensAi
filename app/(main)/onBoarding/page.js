@@ -1,8 +1,8 @@
 import React from "react";
-import Onboarding from "./_components/Onboarding";
 import { getUserOnboardingStatus } from "@/actions/user";
 import { industries } from "@/data/industries";
 import { redirect } from "next/navigation";
+import OnBoardingForm from "./_components/Onboarding";
 
 const OnBoadingPage = async () => {
   const { isOnboarded } = await getUserOnboardingStatus();
@@ -13,7 +13,7 @@ const OnBoadingPage = async () => {
 
   return (
     <main>
-      <Onboarding industries={industries} />
+      <OnBoardingForm industries={industries} />
     </main>
   );
 };

@@ -1,13 +1,17 @@
+"use server";
+
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
+import { generateAiInsights } from "@/actions/dashboard";
+// import { success } from "zod";
 
-export const updateUser = async ({ data }) => {
+export const updateUser = async (data) => {
   const { userId } = await auth();
   if (!userId) {
     throw new Error("Unauthorized");
   }
 
-  const user = db.user.findUnique({
+  const user = await db.user.findUnique({
     where: { clerkUserId: userId },
   });
 
@@ -16,24 +20,20 @@ export const updateUser = async ({ data }) => {
   }
 
   try {
-    const result = db.$transactions(
+    const result = await db.$transaction(
       async (tx) => {
         let industryInsights = await tx.IndustryInsight.findUnique({
           where: { industry: data.industry },
         });
 
         if (!industryInsights) {
-          industryInsights = await tx.IndustryInsight.create({
+          const insights = await generateAiInsights(data.industry);
+
+          industryInsights = await db.IndustryInsight.create({
             data: {
               industry: data.industry,
-              users: [],
-              salaryRanges: [],
-              growthRate: 0.0,
-              demandLevel: "Medium",
-              topSkills: [],
-              marketOutlook: "Positive",
-              keyTrends: [],
-              recommendedSkills: [],
+              ...insights,
+              nextUpdate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
             },
           });
         }
@@ -50,12 +50,12 @@ export const updateUser = async ({ data }) => {
           },
         });
 
-        return { updateUser, industryInsights };
+        return { updatedUser, industryInsights };
       },
       10000 //default 5000(5 sec)
     );
 
-    return result.user;
+    return { success: true, ...result };
   } catch (error) {
     console.error("Error updating user and industry:", error.message);
     throw new Error("Failed to update profile");
