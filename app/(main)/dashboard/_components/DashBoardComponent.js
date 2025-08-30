@@ -137,7 +137,7 @@ const DashBoardComponent = ({ insights }) => {
 
         <Card className={"gap-0 bg-background "}>
           <CardHeader>
-            <CardTitle className={"flex justify-between items-center"}>
+            <CardTitle className={"flex justify-between items-center mb-4"}>
               <span>Top Skills</span>
               <Brain className="text-muted-foreground" />
             </CardTitle>
@@ -195,6 +195,50 @@ const DashBoardComponent = ({ insights }) => {
           </div>
         </CardContent>
       </Card>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <Card className="bg-background">
+          <CardHeader>
+            <CardTitle>Key Industry Trends</CardTitle>
+            <CardDescription>
+              Current trends shaping the industry
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-4">
+              {insights.keyTrends.map((trend, index) => {
+                return (
+                  <li
+                    key={index}
+                    className="flex items-center justify-start space-x-2"
+                  >
+                    <div className="h-2 w-2 rounded-lg bg-white"></div>
+                    <span>{trend}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-background">
+          <CardHeader>
+            <CardTitle>Recommended Skills</CardTitle>
+            <CardDescription>Skills to consider developing</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-1">
+              {insights.recommendedSkills.map((skill) => {
+                return (
+                  <Badge variant={"secondary"} key={skill}>
+                    {skill}
+                  </Badge>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };

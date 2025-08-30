@@ -7,6 +7,8 @@ import { generateAiInsights } from "@/actions/dashboard";
 
 export const updateUser = async (data) => {
   const { userId } = await auth();
+  console.log("userId:", userId);
+
   if (!userId) {
     throw new Error("Unauthorized");
   }
@@ -52,7 +54,7 @@ export const updateUser = async (data) => {
 
         return { updatedUser, industryInsights };
       },
-      10000 //default 5000(5 sec)
+      15000 //default 5000(5 sec)
     );
 
     return { success: true, ...result };
@@ -64,6 +66,8 @@ export const updateUser = async (data) => {
 
 export async function getUserOnboardingStatus() {
   const { userId } = await auth();
+  console.log("userId:", userId);
+
   if (!userId) throw new Error("Unauthorized");
 
   const user = await db.user.findUnique({

@@ -8,7 +8,7 @@ const DashboardPage = async () => {
   const { isOnboarded } = await getUserOnboardingStatus();
 
   if (!isOnboarded) {
-    redirect("/onBoarding");
+    redirect("/onboarding");
   }
 
   const insights = await getIndustryInsights();

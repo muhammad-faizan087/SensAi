@@ -35,7 +35,7 @@ export default function RootLayout({ children }) {
             disableTransitionOnChange
           >
             <Navbar />
-            <main className="min-h-[80vh]">{children}</main>
+            <main className="min-h-[90vh]">{children}</main>
             <Toaster richcolors />
             <Footer />
           </ThemeProvider>
