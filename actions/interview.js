@@ -12,7 +12,6 @@ const model = genAI.getGenerativeModel({
 
 export const generateQuiz = async () => {
   const { userId } = await auth();
-  console.log("userId:", userId);
 
   if (!userId) {
     throw new Error("Unauthorized");
@@ -27,7 +26,7 @@ export const generateQuiz = async () => {
   }
 
   const prompt = `
-    Generate 10 technical interview questions for a ${
+    Generate 3 technical interview questions for a ${
       user.industry
     } professional${
     user.skills?.length ? ` with expertise in ${user.skills.join(", ")}` : ""
@@ -63,7 +62,6 @@ export const generateQuiz = async () => {
 
 export const saveQuizResult = async (questions, answers, score) => {
   const { userId } = await auth();
-  console.log("userId:", userId);
 
   if (!userId) {
     throw new Error("Unauthorized");
@@ -90,6 +88,7 @@ export const saveQuizResult = async (questions, answers, score) => {
   const wrongAnswers = QuestionsResults.filter((q) => !q.isCorrect);
 
   let improvementTip = null;
+
   if (wrongAnswers.length > 0) {
     const wrongQuestionsText = wrongAnswers
       .map(
@@ -112,7 +111,6 @@ export const saveQuizResult = async (questions, answers, score) => {
     try {
       const result = await model.generateContent(improvementPrompt);
       improvementTip = result.response.text().trim();
-      return improvementTip;
     } catch (error) {
       console.error("Error generating improvement tip:", error);
     }
@@ -132,5 +130,34 @@ export const saveQuizResult = async (questions, answers, score) => {
   } catch (error) {
     console.error("Error saving quiz result:", error);
     throw new Error("Failed to save quiz result");
+  }
+};
+
+export const getAssesments = async () => {
+  const { userId } = await auth();
+
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+
+  const user = await db.user.findUnique({
+    where: { clerkUserId: userId },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  try {
+    const Assessments = db.Assessment.findMany({
+      where: { userId: user.id },
+      orderBy: {
+        createdAt: "asc",
+      },
+    });
+    return Assessments;
+  } catch (error) {
+    console.error("Error fetching assessments:", error);
+    throw new Error("Failed to fetch assessments");
   }
 };
