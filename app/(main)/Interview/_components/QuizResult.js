@@ -4,6 +4,7 @@ import { CheckCircle, Cross, Trophy, XCircle } from "lucide-react";
 import React from "react";
 
 const QuizResult = ({ result, StartNew, hideStartNew = false }) => {
+  if (!result) return null;
   return (
     <div className="mx-auto space-y-6">
       <div className="flex justify-start items-center space-x-2">
