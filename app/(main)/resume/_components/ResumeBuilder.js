@@ -9,14 +9,32 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import useFetch from "@/hooks/useFetch-hook";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Download, Save } from "lucide-react";
+import {
+  AlertTriangle,
+  Download,
+  Edit,
+  Loader2,
+  Monitor,
+  Save,
+} from "lucide-react";
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import EntryForm from "./Entry-Form";
+import { useUser } from "@clerk/nextjs";
+import MDEditor from "@uiw/react-md-editor";
+import { entriesToMarkdown } from "@/app/lib/helper";
+import dynamic from "next/dynamic";
+
+const html2pdf = dynamic(() => import("html2pdf.js"), { ssr: false });
 
 const ResumeBuilder = ({ initialContent }) => {
   const [ActiveTab, setActiveTab] = useState("edit");
+  const [resumeMode, setresumeMode] = useState("preview");
+  const [PreviewContent, setPreviewContent] = useState(initialContent);
+  const [isGenerating, setisGenerating] = useState(false);
+
+  const { user } = useUser();
 
   const {
     control,
@@ -36,6 +54,8 @@ const ResumeBuilder = ({ initialContent }) => {
     },
   });
 
+  const formValues = watch();
+
   const {
     loading: isSaving,
     fn: saveResumeFn,
@@ -49,6 +69,63 @@ const ResumeBuilder = ({ initialContent }) => {
     }
   }, [initialContent]);
 
+  useEffect(() => {
+    if (ActiveTab === "edit") {
+      const newContent = getCombinedContent();
+      setPreviewContent(newContent ? newContent : initialContent);
+    }
+  }, [formValues, ActiveTab]);
+
+  const getContactMarkdown = () => {
+    const { contactInfo } = formValues;
+    let parts = [];
+    if (contactInfo.email) parts.push(`📧 ${contactInfo.email}`);
+    if (contactInfo.mobile) parts.push(`📱 ${contactInfo.mobile}`);
+    if (contactInfo.linkedin)
+      parts.push(`💼 [LinkedIn](${contactInfo.linkedin})`);
+    if (contactInfo.twitter) parts.push(`🐦 [Twitter](${contactInfo.twitter})`);
+
+    return parts.length > 0
+      ? `## <div align="center">${user.fullName}</div>
+        \n\n<div align="center">\n\n${parts.join(" | ")}\n\n</div>`
+      : "";
+  };
+
+  const getCombinedContent = () => {
+    const { summary, skills, experience, education, projects } = formValues;
+    return [
+      getContactMarkdown(),
+      summary && `## Professional Summary\n\n${summary}`,
+      skills && `## Skills\n\n${skills}`,
+      entriesToMarkdown(experience, "Work Experience"),
+      entriesToMarkdown(education, "Education"),
+      entriesToMarkdown(projects, "Projects"),
+    ]
+      .filter(Boolean)
+      .join("\n\n");
+  };
+
+  const generatePDF = async () => {
+    setisGenerating(true);
+    try {
+      const html2pdfModule = (await import("html2pdf.js")).default; // dynamic import here
+      const element = document.getElementById("resume-pdf");
+      const opt = {
+        margin: [15, 15],
+        filename: "resume.pdf",
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      };
+
+      await html2pdfModule().set(opt).from(element).save();
+    } catch (error) {
+      console.error("PDF generation error:", error);
+    } finally {
+      setisGenerating(false);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row justify-between items-baseline md:items-center gap-2">
@@ -60,9 +137,18 @@ const ResumeBuilder = ({ initialContent }) => {
             <Save className="" />
             Save
           </Button>
-          <Button>
-            <Download />
-            Download PDF
+          <Button onClick={generatePDF} disabled={isGenerating}>
+            {isGenerating ? (
+              <div className="flex items-center gap-2">
+                <Loader2 className="animate-spin" />
+                Generating...
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Download />
+                Download PDF
+              </div>
+            )}
           </Button>
         </div>
       </div>
@@ -188,7 +274,13 @@ const ResumeBuilder = ({ initialContent }) => {
                 name="experience"
                 control={control}
                 render={({ field }) => {
-                  return <EntryForm type={"Experience"} />;
+                  return (
+                    <EntryForm
+                      type={"Experience"}
+                      entries={field.value}
+                      onChange={field.onChange}
+                    />
+                  );
                 }}
               />
               {errors.experience && (
@@ -204,7 +296,13 @@ const ResumeBuilder = ({ initialContent }) => {
                 name="education"
                 control={control}
                 render={({ field }) => {
-                  return <EntryForm type={"Education"} />;
+                  return (
+                    <EntryForm
+                      type={"Education"}
+                      entries={field.value}
+                      onChange={field.onChange}
+                    />
+                  );
                 }}
               />
               {errors.education && (
@@ -220,7 +318,13 @@ const ResumeBuilder = ({ initialContent }) => {
                 name="projects"
                 control={control}
                 render={({ field }) => {
-                  return <EntryForm type={"Projects"} />;
+                  return (
+                    <EntryForm
+                      type={"Projects"}
+                      entries={field.value}
+                      onChange={field.onChange}
+                    />
+                  );
                 }}
               />
               {errors.projects && (
@@ -231,7 +335,65 @@ const ResumeBuilder = ({ initialContent }) => {
             </div>
           </form>
         </TabsContent>
-        <TabsContent value="preview">Change your password here.</TabsContent>
+        <TabsContent value="preview">
+          {ActiveTab === "preview" && (
+            <Button
+              type="button"
+              variant={"link"}
+              className={"mb-2"}
+              onClick={() => {
+                setresumeMode(resumeMode === "preview" ? "edit" : "preview");
+              }}
+            >
+              {resumeMode === "preview" ? (
+                <div className="flex items-center gap-2">
+                  <Edit />
+                  Edit Your Resume
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Monitor />
+                  Show Preview
+                </div>
+              )}
+            </Button>
+          )}
+          {ActiveTab === "preview" && resumeMode !== "preview" && (
+            <div className="flex p-3 gap-2 items-center border-2 border-yellow-600 text-yellow-600 rounded mb-2">
+              <AlertTriangle className="h-5 w-5" />
+              <span className="text-sm">
+                You will lose editied markdown if you update the form data.
+              </span>
+            </div>
+          )}
+          <div className="border rounded-lg">
+            <MDEditor
+              value={PreviewContent}
+              onChange={setPreviewContent}
+              height={800}
+              preview={resumeMode}
+            />
+          </div>
+          <div className="hidden">
+            <div
+              id="resume-pdf"
+              style={{
+                backgroundColor: "white",
+                color: "black",
+                outlineColor: "transparent",
+              }}
+            >
+              <MDEditor.Markdown
+                source={PreviewContent}
+                style={{
+                  background: "white",
+                  color: "black",
+                  outlineColor: "transparent",
+                }}
+              />
+            </div>
+          </div>
+        </TabsContent>
       </Tabs>
     </div>
   );

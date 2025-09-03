@@ -66,7 +66,7 @@ export const getResume = async () => {
   return content;
 };
 
-export const improveWithAi = async () => {
+export const improveWithAi = async (current, type, organization = "") => {
   const { userId } = await auth();
 
   if (!userId) {
