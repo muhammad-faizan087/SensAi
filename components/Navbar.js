@@ -75,7 +75,7 @@ const Navbar = async () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <Link href={"/cover-letter"}>
+                    <Link href={"/Ai-cover-letter"}>
                       <Button
                         className="flex items-center gap-2 justify-between cursor-pointer"
                         variant={"ghost"}

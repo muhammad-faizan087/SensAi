@@ -25,6 +25,7 @@ import { useUser } from "@clerk/nextjs";
 import MDEditor from "@uiw/react-md-editor";
 import { entriesToMarkdown } from "@/app/lib/helper";
 import dynamic from "next/dynamic";
+import { toast } from "sonner";
 
 const html2pdf = dynamic(() => import("html2pdf.js"), { ssr: false });
 
@@ -126,6 +127,22 @@ const ResumeBuilder = ({ initialContent }) => {
     }
   };
 
+  useEffect(() => {
+    if (saveResult && !isSaving) {
+      toast.message("Resume Saved Successfully");
+    }
+    if (saveError) {
+      toast.error(saveError.message || "Failed saving resume");
+    }
+  }, [saveResult, saveError, isSaving]);
+
+  const OnSubmit = async () => {
+    try {
+      await saveResumeFn(PreviewContent);
+    } catch (error) {
+      console.error("Save error:", error);
+    }
+  };
   return (
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row justify-between items-baseline md:items-center gap-2">
@@ -133,9 +150,18 @@ const ResumeBuilder = ({ initialContent }) => {
           Resume Builder
         </h1>
         <div className="space-x-2">
-          <Button variant={"destructive"}>
-            <Save className="" />
-            Save
+          <Button variant={"destructive"} onClick={OnSubmit}>
+            {isSaving ? (
+              <div className="flex items-center gap-2">
+                <Loader2 className="animate-spin" />
+                Saving...
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Save className="" />
+                Save
+              </div>
+            )}
           </Button>
           <Button onClick={generatePDF} disabled={isGenerating}>
             {isGenerating ? (
