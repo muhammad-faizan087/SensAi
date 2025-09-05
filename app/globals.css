@@ -106,6 +106,10 @@
   background-blend-mode: overlay;
 }
 
+body {
+  overflow-y: scroll !important;
+}
+
 @layer utilities {
   .gradient {
     @apply bg-gradient-to-b from-gray-400 via-gray-200 to-gray-600;

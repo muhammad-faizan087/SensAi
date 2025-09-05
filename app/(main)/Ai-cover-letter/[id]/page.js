@@ -1,11 +1,14 @@
-import { Button } from "@/components/ui/button";
-
-import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
+import { getCoverLetter } from "@/actions/cover-letter";
 import React from "react";
-import CoverLetterGenerator from "../_components/CoverLetterGenerator";
+import CoverLetterPreview from "../_components/CoverLetterPreview";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
-const NewCoverLetter = () => {
+const page = async ({ params }) => {
+  const { id } = await params;
+  const coverLetter = await getCoverLetter(id);
+
   return (
     <div className="py-6">
       <div className="space-y-6">
@@ -17,16 +20,13 @@ const NewCoverLetter = () => {
         </Link>
         <div>
           <h1 className="font-bold gradient-title text-5xl md:text-6xl">
-            Create Cover Letter
+            {coverLetter?.jobTitle} at {coverLetter?.companyName}
           </h1>
-          <p className="text-muted-foreground">
-            Generate a tailored cover letter for your job application
-          </p>
         </div>
-        <CoverLetterGenerator />
+        <CoverLetterPreview content={coverLetter?.content} />
       </div>
     </div>
   );
 };
 
-export default NewCoverLetter;
+export default page;

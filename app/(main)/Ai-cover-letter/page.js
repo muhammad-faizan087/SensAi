@@ -11,6 +11,7 @@ import { format } from "date-fns";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import React from "react";
+import LettersList from "./_components/LettersList";
 
 const AiCoverLetterPage = async () => {
   const cover_letters = await getCoverLetters();
@@ -29,38 +30,7 @@ const AiCoverLetterPage = async () => {
             </Button>
           </Link>
         </div>
-        {cover_letters?.length > 0 ? (
-          <div>
-            {cover_letters.map((letter) => {
-              return (
-                <Card key={letter.id}>
-                  <CardHeader>
-                    <CardTitle className={"font-medium text-lg"}>
-                      {letter.jobTitle} at {letter.companyName}
-                    </CardTitle>
-                    <CardDescription>
-                      Created {format(new Date(letter.createdAt), "PPP")}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-sm text-muted-foreground flex items-center justify-start">
-                      {letter.jobDescription}
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        ) : (
-          <Card>
-            <CardHeader>
-              <CardTitle>No Cover Letters Yet</CardTitle>
-              <CardDescription>
-                Create your first cover letter to get started
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        )}
+        <LettersList letters={cover_letters} />
       </div>
     </div>
   );

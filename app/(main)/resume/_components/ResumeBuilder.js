@@ -185,10 +185,10 @@ const ResumeBuilder = ({ initialContent }) => {
         </TabsList>
         <TabsContent value="edit">
           <form className="space-y-8">
-            <div className="space-y-4">
+            <div className="space-y-4 bg-transparent">
               <h3 className="text-lg font-medium">Contact Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border rounded-lg bg-muted/50">
-                <div className="space-y-2">
+                <div className="space-y-2 flex flex-col">
                   <label className="text-sm font-medium">Email</label>
                   <Input
                     {...register("contactInfo.email")}
@@ -203,7 +203,7 @@ const ResumeBuilder = ({ initialContent }) => {
                   )}
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-2 flex flex-col">
                   <label className="text-sm font-medium">Mobile Number</label>
                   <Input
                     {...register("contactInfo.mobile")}
@@ -218,7 +218,7 @@ const ResumeBuilder = ({ initialContent }) => {
                   )}
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-2 flex flex-col">
                   <label className="text-sm font-medium">
                     Twitter/X Profile
                   </label>
@@ -235,7 +235,7 @@ const ResumeBuilder = ({ initialContent }) => {
                   )}
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-2 flex flex-col">
                   <label className="text-sm font-medium">LinkedIn URL</label>
                   <Input
                     {...register("contactInfo.linkedin")}
