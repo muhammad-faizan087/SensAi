@@ -17,7 +17,7 @@ import {
   Monitor,
   Save,
 } from "lucide-react";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import EntryForm from "./Entry-Form";
@@ -26,6 +26,7 @@ import MDEditor from "@uiw/react-md-editor";
 import { entriesToMarkdown } from "@/app/lib/helper";
 import dynamic from "next/dynamic";
 import { toast } from "sonner";
+import { useReactToPrint } from "react-to-print";
 
 const html2pdf = dynamic(() => import("html2pdf.js"), { ssr: false });
 
@@ -106,30 +107,36 @@ const ResumeBuilder = ({ initialContent }) => {
       .join("\n\n");
   };
 
-  const generatePDF = async () => {
-    setisGenerating(true);
-    try {
-      const html2pdfModule = (await import("html2pdf.js")).default; // dynamic import here
-      const element = document.getElementById("resume-pdf");
-      const opt = {
-        margin: [15, 15],
-        filename: "resume.pdf",
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-      };
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    contentRef: componentRef,
+    documentTitle: "resume",
+  });
 
-      await html2pdfModule().set(opt).from(element).save();
-    } catch (error) {
-      console.error("PDF generation error:", error);
-    } finally {
-      setisGenerating(false);
-    }
-  };
+  // const generatePDF = async () => {
+  //   setisGenerating(true);
+  //   try {
+  //     const html2pdfModule = (await import("html2pdf.js")).default; // dynamic import here
+  //     const element = document.getElementById("resume-pdf");
+  //     const opt = {
+  //       margin: [15, 15],
+  //       filename: "resume.pdf",
+  //       image: { type: "jpeg", quality: 0.98 },
+  //       html2canvas: { scale: 2 },
+  //       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+  //     };
+
+  //     await html2pdfModule().set(opt).from(element).save();
+  //   } catch (error) {
+  //     console.error("PDF generation error:", error);
+  //   } finally {
+  //     setisGenerating(false);
+  //   }
+  // };
 
   useEffect(() => {
     if (saveResult && !isSaving) {
-      toast.message("Resume Saved Successfully");
+      toast.success("Resume Saved Successfully");
     }
     if (saveError) {
       toast.error(saveError.message || "Failed saving resume");
@@ -163,7 +170,7 @@ const ResumeBuilder = ({ initialContent }) => {
               </div>
             )}
           </Button>
-          <Button onClick={generatePDF} disabled={isGenerating}>
+          <Button onClick={handlePrint} disabled={isGenerating}>
             {isGenerating ? (
               <div className="flex items-center gap-2">
                 <Loader2 className="animate-spin" />
@@ -185,9 +192,9 @@ const ResumeBuilder = ({ initialContent }) => {
         </TabsList>
         <TabsContent value="edit">
           <form className="space-y-8">
-            <div className="space-y-4 bg-transparent">
+            <div className="space-y-4">
               <h3 className="text-lg font-medium">Contact Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border rounded-lg bg-muted/50">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border rounded-lg bg-transparent">
                 <div className="space-y-2 flex flex-col">
                   <label className="text-sm font-medium">Email</label>
                   <Input
@@ -261,7 +268,7 @@ const ResumeBuilder = ({ initialContent }) => {
                   return (
                     <Textarea
                       {...field}
-                      className="h-32 "
+                      className="h-32 bg-transparent"
                       placeholder="Write a compelling professional summary..."
                       error={errors.summary}
                     />
@@ -282,7 +289,7 @@ const ResumeBuilder = ({ initialContent }) => {
                   return (
                     <Textarea
                       {...field}
-                      className="h-32 bg-background"
+                      className="h-32 bg-transparent"
                       placeholder="List your key skills..."
                       error={errors.skills}
                     />
@@ -400,23 +407,15 @@ const ResumeBuilder = ({ initialContent }) => {
               preview={resumeMode}
             />
           </div>
-          <div className="hidden">
-            <div
-              id="resume-pdf"
-              style={{
-                backgroundColor: "white",
-                color: "black",
-                outlineColor: "transparent",
-              }}
-            >
-              <MDEditor.Markdown
-                source={PreviewContent}
-                style={{
-                  background: "white",
-                  color: "black",
-                  outlineColor: "transparent",
-                }}
-              />
+          <div
+            style={{
+              visibility: "hidden",
+              position: "absolute",
+              left: "-9999px",
+            }}
+          >
+            <div id="resume-pdf" ref={componentRef}>
+              <MDEditor.Markdown source={PreviewContent} />
             </div>
           </div>
         </TabsContent>

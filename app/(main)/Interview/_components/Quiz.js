@@ -150,12 +150,13 @@ const Quiz = () => {
           </div>
         )}
       </CardContent>
-      <CardFooter className={"flex justify-between"}>
+      <CardFooter className="flex flex-col sm:flex-row sm:justify-between gap-2">
         {!showExplanation && (
           <Button
             onClick={() => setShowExplanation(true)}
             variant="outline"
             disabled={!Answers[questionNo]}
+            className="w-full sm:w-auto"
           >
             Show Explanation
           </Button>
@@ -163,7 +164,7 @@ const Quiz = () => {
         <Button
           onClick={handleNext}
           disabled={!Answers[questionNo] || savingResult}
-          className="ml-auto flex items-center justify-center gap-2"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 sm:ml-auto"
         >
           {savingResult && (
             <Loader2 className="w-5 h-5 text-gray-500 animate-spin" />

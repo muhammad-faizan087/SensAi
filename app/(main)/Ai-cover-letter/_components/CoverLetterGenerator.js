@@ -17,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import useFetch from "@/hooks/useFetch-hook";
 import { generateCoverLetter } from "@/actions/cover-letter";
-import { LetterTextIcon, Loader2, Pen } from "lucide-react";
+import { LetterTextIcon, Loader2, Pen, PenBox } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -122,12 +122,12 @@ const CoverLetterGenerator = () => {
               >
                 {isGenerating ? (
                   <div className="flex items-center gap-2">
-                    <Loader2 />
+                    <Loader2 className="animate-spin" />
                     Generating...
                   </div>
                 ) : (
                   <div className="flex items-center gap-2">
-                    <Pen />
+                    <PenBox />
                     Generate Cover Letter
                   </div>
                 )}

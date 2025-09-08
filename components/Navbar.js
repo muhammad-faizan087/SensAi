@@ -1,3 +1,5 @@
+"use client";
+
 import {
   SignedIn,
   SignedOut,
@@ -25,10 +27,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { currUser } from "@/lib/getCurrUser";
 
-const Navbar = async () => {
-  await currUser();
+const Navbar = ({ user }) => {
+  // await currUser();
 
   return (
     <header className="min-w-screen h-[10vh] fixed top-0 z-50 border-b backdrop-blur-md bg-background/50">

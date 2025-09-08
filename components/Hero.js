@@ -4,11 +4,14 @@ import { useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { Button } from "./ui/button";
 import "../app/globals.css";
+import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
 
 const HeroSection = () => {
   const imageRef = useRef(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     const imageElement = imageRef.current;
@@ -40,16 +43,23 @@ const HeroSection = () => {
           AI-powered tools for job success.
         </p>
         <div className="mt-5 flex gap-4 justify-center">
-          <Link href="/dashboard">
-            <Button size="lg" className="px-8">
-              Get Started
-            </Button>
-          </Link>
-          <Link href="/dashboard">
-            <Button variant="outline" size="lg" className="px-8">
-              Learn More
-            </Button>
-          </Link>
+          <Button
+            onClick={() => router.push("/sign-in")}
+            size="lg"
+            className="px-8 cursor-pointer"
+          >
+            {/* <Link href={"/sign-in"}>Get Started</Link> */}
+            Get Started
+          </Button>
+          <Button
+            onClick={() => router.push("/dashboard")}
+            variant="outline"
+            size="lg"
+            className="px-8 cursor-pointer"
+          >
+            {/* <Link href={"/dashboard"}>Learn More</Link> */}
+            Learn More
+          </Button>
         </div>
       </div>
 

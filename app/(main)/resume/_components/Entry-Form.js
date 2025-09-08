@@ -49,6 +49,8 @@ export default function EntryForm({ type, entries, onChange }) {
   });
 
   const current = watch("current");
+  const title = watch("title");
+  const organization = watch("organization");
 
   const handleAdd = handleValidation((data) => {
     const formattedEntry = {
@@ -94,9 +96,16 @@ export default function EntryForm({ type, entries, onChange }) {
       return;
     }
 
+    console.log("Title:", title);
+    console.log("organization:", organization);
+    console.log("current:", description);
+    console.log("type:", type.toLowerCase());
+
     await improveWithAIFn({
       current: description,
       type: type.toLowerCase(), // 'experience', 'education', or 'project'
+      organization,
+      title,
     });
   };
 
@@ -104,7 +113,7 @@ export default function EntryForm({ type, entries, onChange }) {
     <div className="space-y-4">
       <div className="space-y-4">
         {entries.map((item, index) => (
-          <Card key={index}>
+          <Card key={index} className={"bg-transparent"}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
                 {item.title} @ {item.organization}
@@ -133,7 +142,7 @@ export default function EntryForm({ type, entries, onChange }) {
       </div>
 
       {isAdding && (
-        <Card>
+        <Card className={"bg-transparent"}>
           <CardHeader>
             <CardTitle>Add {type}</CardTitle>
           </CardHeader>
@@ -209,7 +218,7 @@ export default function EntryForm({ type, entries, onChange }) {
             <div className="space-y-2">
               <Textarea
                 placeholder={`Description of your ${type.toLowerCase()}`}
-                className="h-32"
+                className="h-32 bg-transparent"
                 {...register("description")}
                 error={errors.description}
               />

@@ -3,7 +3,7 @@ import { BarLoader } from "react-spinners";
 
 const layout = ({ children }) => {
   return (
-    <div className="px-8">
+    <div className="px-4 md:px-8">
       <Suspense
         fallback={<BarLoader className="mt-4" width={"100%"} color="gray" />}
       >

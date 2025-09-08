@@ -17,9 +17,9 @@ const AiCoverLetterPage = async () => {
   const cover_letters = await getCoverLetters();
 
   return (
-    <div className="py-6">
+    <div className="md:py-6">
       <div className="space-y-6">
-        <div className="flex justify-between items-center flex-col md:flex-row gap-2">
+        <div className="flex justify-between items-center flex-col md:flex-row gap-4">
           <h1 className="font-bold gradient-title text-5xl md:text-6xl">
             My Cover Letters
           </h1>

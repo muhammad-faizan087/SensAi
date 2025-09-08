@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
+import { currUser } from "@/lib/getCurrUser";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,7 +22,9 @@ export const metadata = {
   description: "You own Ai coach",
 };
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const user = await currUser();
+
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
@@ -34,7 +37,7 @@ export default function RootLayout({ children }) {
             enableSystem
             disableTransitionOnChange
           >
-            <Navbar />
+            <Navbar user={user} />
             <main className="min-h-[90vh]">{children}</main>
             <Toaster richcolors />
             <Footer />

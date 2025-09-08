@@ -30,7 +30,9 @@ const QuizList = ({ assessments }) => {
     <div>
       <Card className={"bg-background"}>
         <CardHeader
-          className={"flex flex-row items-center justify-between w-full"}
+          className={
+            "flex flex-col md:flex-row gap-4 md:gap-2 items-center justify-between w-full"
+          }
         >
           <div>
             <CardTitle
@@ -47,47 +49,51 @@ const QuizList = ({ assessments }) => {
           </div>
         </CardHeader>
         <CardContent className={"space-y-4"}>
-          {assessments?.map((assessment, i) => {
-            return (
-              <Card
-                key={i}
-                className={
-                  "bg-background hover:bg-muted/50 transition-colors cursor-pointer"
-                }
-                onClick={() => {
-                  setselectedQuiz(assessment);
-                }}
-              >
-                <CardHeader
+          {assessments
+            ?.slice()
+            .reverse()
+            .map((assessment, i) => {
+              const quizNumber = assessments.length - i;
+              return (
+                <Card
+                  key={i}
                   className={
-                    "flex flex-row items-center justify-between w-full"
+                    "bg-background hover:bg-muted/50 transition-colors cursor-pointer"
                   }
+                  onClick={() => {
+                    setselectedQuiz(assessment);
+                  }}
                 >
-                  <div>
-                    <CardTitle className={"gradient-title text-2xl"}>
-                      Quiz {i + 1}
-                    </CardTitle>
-                    <CardDescription>
-                      Score: {assessment?.quizScore.toFixed(1)}%
-                    </CardDescription>
-                  </div>
-                  <div>
-                    {format(
-                      new Date(assessment.createdAt),
-                      "MMMM dd, yyyy HH:mm"
-                    )}
-                  </div>
-                </CardHeader>
-                {assessment.improvementTip && (
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground">
-                      {assessment.improvementTip}
-                    </p>
-                  </CardContent>
-                )}
-              </Card>
-            );
-          })}
+                  <CardHeader
+                    className={
+                      "flex flex-col md:flex-row gap-4 md:gap-2 items-center justify-between w-full"
+                    }
+                  >
+                    <div className="">
+                      <CardTitle className={"gradient-title text-2xl"}>
+                        Quiz {quizNumber}
+                      </CardTitle>
+                      <CardDescription>
+                        Score: {assessment?.quizScore.toFixed(1)}%
+                      </CardDescription>
+                    </div>
+                    <div>
+                      {format(
+                        new Date(assessment.createdAt),
+                        "MMMM dd, yyyy HH:mm"
+                      )}
+                    </div>
+                  </CardHeader>
+                  {assessment.improvementTip && (
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground">
+                        {assessment.improvementTip}
+                      </p>
+                    </CardContent>
+                  )}
+                </Card>
+              );
+            })}
         </CardContent>
       </Card>
 
