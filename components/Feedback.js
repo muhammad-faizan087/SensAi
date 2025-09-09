@@ -18,12 +18,12 @@ const Feedback = () => {
                 <CardContent>
                   <div className="flex items-center justify-left gap-6 mb-4">
                     <Image
-                      src={testimonial.image}
+                      src={testimonial.image || "/user.svg"}
                       className="rounded-full object-cover"
                       alt="Author Image"
                       width={40}
                       height={40}
-                      priority
+                      unoptimized
                     />
                     <div className="text-left text-white">
                       <p className="font-bold">{testimonial.author}</p>
