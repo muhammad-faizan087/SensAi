@@ -164,11 +164,17 @@ const DashBoardComponent = ({ insights }) => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-[400px]">
+          <div className="h-[300px] sm:h-[400px] w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={salaryData}>
+              <BarChart data={salaryData} margin={{ bottom: 60 }}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
+                <XAxis
+                  dataKey="name"
+                  tick={{ fontSize: 10 }}
+                  interval={0}
+                  angle={-30}
+                  textAnchor="end"
+                />
                 <YAxis />
                 <Tooltip
                   content={({ active, payload, label }) => {

@@ -42,24 +42,26 @@ const HeroSection = () => {
           Advance your career with personalized guidance, interview prep, and
           AI-powered tools for job success.
         </p>
-        <div className="mt-5 flex gap-4 justify-center">
-          <Button
-            onClick={() => router.push("/sign-in")}
-            size="lg"
-            className="px-8 cursor-pointer"
-          >
-            {/* <Link href={"/sign-in"}>Get Started</Link> */}
-            Get Started
-          </Button>
-          <Button
-            onClick={() => router.push("/dashboard")}
-            variant="outline"
-            size="lg"
-            className="px-8 cursor-pointer"
-          >
-            {/* <Link href={"/dashboard"}>Learn More</Link> */}
-            Learn More
-          </Button>
+        <div className="mt-5 flex justify-center space-x-4">
+          <Link href="/dashboard">
+            <Button size="lg" className="px-8 cursor-pointer">
+              Get Started
+            </Button>
+          </Link>
+          <div>
+            <Button
+              size="lg"
+              variant="outline"
+              className="px-8 cursor-pointer"
+              onClick={() => {
+                document
+                  .getElementById("how-it-works")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }}
+            >
+              Learn More
+            </Button>
+          </div>
         </div>
       </div>
 

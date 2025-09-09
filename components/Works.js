@@ -4,7 +4,10 @@ import { Card, CardContent } from "./ui/card";
 
 const Works = () => {
   return (
-    <section className="text-center px-4 md:px-8 py-8 md:py-12 mb-12">
+    <section
+      id="how-it-works"
+      className="text-center px-4 md:px-8 py-8 md:py-12 mb-12"
+    >
       <div className="max-w-6xl mx-auto flex flex-col items-center justify-center gap-4 md:gap-8">
         <div>
           <h2 className="text-3xl font-bold mb-2">How It Works</h2>
