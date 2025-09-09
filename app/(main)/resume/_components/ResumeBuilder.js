@@ -414,8 +414,24 @@ const ResumeBuilder = ({ initialContent }) => {
               left: "-9999px",
             }}
           >
-            <div id="resume-pdf" ref={componentRef}>
-              <MDEditor.Markdown source={PreviewContent} />
+            <div
+              id="resume-pdf"
+              ref={componentRef}
+              className="bg-white text-black"
+              style={{
+                padding: "30px 40px", // vertical + horizontal padding
+                minHeight: "100%",
+                lineHeight: "1.6",
+                fontSize: "14px",
+                boxSizing: "border-box",
+              }}
+            >
+              <MDEditor.Markdown
+                source={PreviewContent}
+                style={{
+                  width: "100%",
+                }}
+              />
             </div>
           </div>
         </TabsContent>
