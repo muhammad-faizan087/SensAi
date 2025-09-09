@@ -4,6 +4,8 @@ import { industries } from "@/data/industries";
 import { redirect } from "next/navigation";
 import OnBoardingForm from "./_components/Onboarding";
 
+export const runtime = "nodejs";
+
 const OnBoadingPage = async () => {
   const { isOnboarded } = await getUserOnboardingStatus();
 
