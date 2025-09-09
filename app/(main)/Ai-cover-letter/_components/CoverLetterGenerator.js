@@ -57,7 +57,7 @@ const CoverLetterGenerator = () => {
     if (generatingError) {
       toast.error("Error generating cover letter");
     }
-  }, [isGenerating, resultData, generatingErrorx, router]);
+  }, [isGenerating, resultData, generatingError, router]);
 
   return (
     <div>
