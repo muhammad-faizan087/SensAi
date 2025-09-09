@@ -57,7 +57,7 @@ const CoverLetterGenerator = () => {
     if (generatingError) {
       toast.error("Error generating cover letter");
     }
-  }, [isGenerating, resultData, generatingError]);
+  }, [isGenerating, resultData, generatingErrorx, router]);
 
   return (
     <div>
@@ -65,7 +65,7 @@ const CoverLetterGenerator = () => {
         <CardHeader>
           <CardTitle>Job Details</CardTitle>
           <CardDescription>
-            Provide information about the position you're applying for
+            Provide information about the position you&apos;re applying for
           </CardDescription>
         </CardHeader>
         <CardContent>
