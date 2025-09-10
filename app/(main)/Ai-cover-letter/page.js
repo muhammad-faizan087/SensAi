@@ -12,8 +12,16 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import LettersList from "./_components/LettersList";
+import { getUserOnboardingStatus } from "@/actions/user";
+import { redirect } from "next/navigation";
 
 const AiCoverLetterPage = async () => {
+  const { isOnboarded } = await getUserOnboardingStatus();
+
+  if (!isOnboarded) {
+    redirect("/onboarding");
+  }
+
   const cover_letters = await getCoverLetters();
 
   return (
